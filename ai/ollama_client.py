@@ -2,6 +2,7 @@
 """Ollama AI integration for stock analysis."""
 
 import asyncio
+import os
 import ollama
 from typing import Dict
 from config import OLLAMA_MODEL
@@ -25,11 +26,15 @@ async def get_ai_prediction(
     """
     prompt = build_analysis_prompt(ticker, indicators, news_str, info)
 
+    host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    client = ollama.Client(host=host)
+
     loop = asyncio.get_running_loop()
     response = await loop.run_in_executor(
         None,
-        lambda: ollama.chat(
-            model=OLLAMA_MODEL, messages=[{"role": "user", "content": prompt}]
+        lambda: client.chat(
+            model=OLLAMA_MODEL,
+            messages=[{"role": "user", "content": prompt}],
         ),
     )
 
