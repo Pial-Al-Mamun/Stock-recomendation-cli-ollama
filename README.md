@@ -27,6 +27,6 @@ The CLI container calls Ollama at `http://ollama:11434`.
 
 ## Notes
 
-- he default model name is set in `config.py` as `OLLAMA_MODEL = "llama3"`.
+- The default model name is set in `config.py` as `OLLAMA_MODEL = "llama3"`.
 - Ollama models are persisted in the `ollama` docker volume.
 

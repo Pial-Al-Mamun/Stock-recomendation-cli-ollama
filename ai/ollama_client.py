@@ -30,12 +30,32 @@ async def get_ai_prediction(
     client = ollama.Client(host=host)
 
     loop = asyncio.get_running_loop()
-    response = await loop.run_in_executor(
-        None,
-        lambda: client.chat(
-            model=OLLAMA_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-        ),
-    )
+    try:
+        response = await loop.run_in_executor(
+            None,
+            lambda: client.chat(
+                model=OLLAMA_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+            ),
+        )
+    except Exception as e:
+        status_code = getattr(e, "status_code", None)
+        message = str(e)
+        model_missing = (
+            status_code == 404 and "model" in message and "not found" in message
+        )
+
+        if not model_missing:
+            raise
+
+        print(f"\n⏬ Ollama model '{OLLAMA_MODEL}' not found. Pulling it now...\n")
+        await loop.run_in_executor(None, lambda: client.pull(OLLAMA_MODEL))
+        response = await loop.run_in_executor(
+            None,
+            lambda: client.chat(
+                model=OLLAMA_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+            ),
+        )
 
     return response["message"]["content"]
