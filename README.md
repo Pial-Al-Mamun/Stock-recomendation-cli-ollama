@@ -11,19 +11,14 @@ Run everything with Docker (no local Python installs needed).
 docker compose up -d ollama
 ```
 
-2) (First run only) Pull the model inside the Ollama container:
-
-```bash
-docker compose exec ollama ollama pull llama3
-```
-
-3) Run the CLI app (interactive):
+2) Run the CLI app (interactive):
 
 ```bash
 docker compose run --rm app
 ```
 
-The CLI container calls Ollama at `http://ollama:11434`.
+The CLI container calls Ollama at `http://ollama:11434`.  
+**Note:** On first run, the app will automatically pull the configured model (this takes a few minutes).
 
 ## Notes
 
