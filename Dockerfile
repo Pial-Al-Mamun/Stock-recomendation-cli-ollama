@@ -5,9 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install dependencies (no pip; uses uv + uv.lock)
-COPY pyproject.toml uv.lock /app/
-RUN uv sync --frozen --no-dev
+# Install dependencies (no pip; uses built-in uv)
+COPY pyproject.toml /app/
+RUN uv sync --no-dev
 
 # Copy the application code
 COPY . /app
